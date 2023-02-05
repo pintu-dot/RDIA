@@ -3,9 +3,9 @@ from scipy import sparse
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import log_loss, roc_auc_score
 
-from grad_utils import grad_logloss_theta_lr
-from grad_utils import batch_grad_logloss_lr
-from inverse_hvp import inverse_hvp_lr_newtonCG
+from grad_utils import grad_logloss_theta_lr # calculate dL_i/dTheta that is gradient  of losss function with respect to a single point
+from grad_utils import batch_grad_logloss_lr # calculate gradient of a batch
+from inverse_hvp import inverse_hvp_lr_newtonCG # directly compute H^-1*v
 from dataset import load_data_v1,select_from_one_class,load_data
 import argparse
 import time
