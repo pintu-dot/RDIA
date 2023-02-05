@@ -56,7 +56,7 @@ print("Load data, cost {:.1f} sec".format(time.time()-start_time))
 
 # get the subset samples number
 num_tr_sample = x_train.shape[0]
-obj_sample_size = int(sample_ratio * num_tr_sample)
+obj_sample_size = int(sample_ratio * num_tr_sample) # 5% is used for training and rest 5% is kept clean to be used as test samples, %ge can be varied by changing sample_ratio
 # flip labels
 idxs = np.arange(y_train.shape[0])
 np.random.shuffle(idxs)
