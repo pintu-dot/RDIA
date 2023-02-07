@@ -69,7 +69,7 @@ np.random.shuffle(idxs)
 num_flip = int(flip_ratio * len(idxs))
 y_train[idxs[:num_flip]] = np.logical_xor(np.ones(num_flip), y_train[idxs[:num_flip]]).astype(int)
 
-chk_indx=np.zeros(idxs)
+chk_indx=np.zeros(len(idxs))
 chk_indx[:num_flip]=1;
 
 
@@ -86,17 +86,18 @@ clf_cl = LogisticRegression(
         )
 clf_cl.fit(x_train,y_train_cl)
 # on Va
-y_va_pred_cl = clf.predict_proba(x_va)[:,1]
+y_va_pred_cl = clf_cl.predict_proba(x_va)[:,1]
 full_logloss = log_loss(y_va,y_va_pred_cl)
 weight_ar_Cl = clf_cl.coef_.flatten()
 # on Te
-y_te_pred_cl = clf.predict_proba(x_te)[:,1]
+y_te_pred_cl = clf_cl.predict_proba(x_te)[:,1]
 full_te_logloss = log_loss(y_te,y_te_pred_cl)
-full_te_auc = roc_auc_score(y_te, y_te_pred_Cl)
-y_te_pred_cl = clf.predict(x_te)
-full_te_acc = (y_te == y_te_pred_Cl).sum() / y_te.shape[0]
+full_te_auc = roc_auc_score(y_te, y_te_pred_cl)
+y_te_pred_cl = clf_cl.predict(x_te)
+full_te_acc_cl = (y_te == y_te_pred_cl).sum() / y_te.shape[0]
 print("for clean dataset [FullSet] Va logloss {:.6f}".format(full_logloss))
 print("for clean dataset [FullSet] Te logloss {:.6f}".format(full_te_logloss))
+print("for clean dataset [FullSet] Te accuracy {:.6f}".format(full_te_acc_cl))
 
 
 
@@ -128,6 +129,7 @@ full_te_acc = (y_te == y_te_pred).sum() / y_te.shape[0]
 # print full-set-model results
 print("for noisy dataset [FullSet] Va logloss {:.6f}".format(full_logloss))
 print("for noisy dataset [FullSet] Te logloss {:.6f}".format(full_te_logloss))
+print("for noisy dataset [FullSet] Te accuracy {:.6f}".format(full_te_acc))
 
 # get time cost for computing the IF
 if_start_time = time.time()
@@ -195,12 +197,14 @@ dropsize = int(drop * num_tr_sample)
 correction_size = int(correction*num_tr_sample)
 drop_inf = tmp_list[:dropsize]
 correction_inf1 = tmp_list[-correction_size:]
+infl_chk=np.zeros(len(chk_indx))
 
 alpha = args.alpha
 correction_inf = []
-for i in correction_inf1:
+for pos,i in enumerate(correction_inf1):
      if i > alpha:
-        correction_inf.append(i)
+       infl_chk[pos]=1
+       correction_inf.append(i)
 
 drop_index = []
 for i in drop_inf:
@@ -209,12 +213,11 @@ for i in drop_inf:
         drop_index.append(idx)
 
         
-infl_chk=np.zeros(len(chk_indx))
+
         
 correction_index=[]
 for i in correction_inf:
         idx = np.argwhere(phi_ar==i)
-        infl_chk[i]=1
         for id in idx:
             id = id.item()
             correction_index.append(id)
@@ -223,7 +226,7 @@ length = len(correction_index)
 print("Totaling relabeling number:",length)
 
 #check match between real flipped data nad one predicted by influece function
-chk=chk_indx==infl_Chk
+chk=chk_indx==infl_chk
 print("Number of places where value matches is",chk.sum()," out of ", len(chk_indx)," postions")
 
 # RDIA
