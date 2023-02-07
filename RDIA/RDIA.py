@@ -214,7 +214,7 @@ infl_chk=np.zeros(len(chk_indx))
 correction_index=[]
 for i in correction_inf:
         idx = np.argwhere(phi_ar==i)
-        infl_chk(i)=1
+        infl_chk[i]=1
         for id in idx:
             id = id.item()
             correction_index.append(id)
