@@ -69,7 +69,8 @@ np.random.shuffle(idxs)
 num_flip = int(flip_ratio * len(idxs))
 y_train[idxs[:num_flip]] = np.logical_xor(np.ones(num_flip), y_train[idxs[:num_flip]]).astype(int)
 
-
+chk_indx=np.zeros(idxs)
+chk_indx[:num_flip]=1;
 
 
 #for clean dataset
@@ -207,15 +208,23 @@ for i in drop_inf:
         idx = idx.item()
         drop_index.append(idx)
 
+        
+infl_chk=np.zeros(len(chk_indx))
+        
 correction_index=[]
 for i in correction_inf:
         idx = np.argwhere(phi_ar==i)
+        infl_chk(i)=1
         for id in idx:
             id = id.item()
             correction_index.append(id)
 print("Relabeling index:",correction_index)
 length = len(correction_index)
 print("Totaling relabeling number:",length)
+
+#check match between real flipped data nad one predicted by influece function
+chk=chk_indx==infl_Chk
+print("Number of places where value matches is",chk.sum()," out of ", len(chk_indx)," postions")
 
 # RDIA
 a = np.arange(y_train.shape[0])
