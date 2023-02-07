@@ -71,7 +71,7 @@ y_train[idxs[:num_flip]] = np.logical_xor(np.ones(num_flip), y_train[idxs[:num_f
 
 chk_indx=np.zeros(len(idxs))
 chk_indx[:num_flip]=1;
-
+print("chk_indx_sum",chk_indx.sum())
 
 #for clean dataset
 clf_cl = LogisticRegression(
@@ -224,7 +224,9 @@ for i in correction_inf:
 print("Relabeling index:",correction_index)
 length = len(correction_index)
 print("Totaling relabeling number:",length)
-
+correction_indx_nm=np.array(correction_index)
+chk1=correction_indx_nm==infl_chk
+print("*******",chk1.sum())
 #check match between real flipped data nad one predicted by influece function
 chk=chk_indx==infl_chk
 print("Number of places where value matches is",chk.sum()," out of ", len(chk_indx)," postions")
