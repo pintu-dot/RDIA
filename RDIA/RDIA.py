@@ -87,7 +87,7 @@ clf_cl = LogisticRegression(
 clf_cl.fit(x_train,y_train_cl)
 # on Va
 y_va_pred_cl = clf.predict_proba(x_va)[:,1]
-full_logloss = log_loss(y_va,y_va_pred)_cl)
+full_logloss = log_loss(y_va,y_va_pred_cl)
 weight_ar_Cl = clf_cl.coef_.flatten()
 # on Te
 y_te_pred_cl = clf.predict_proba(x_te)[:,1]
