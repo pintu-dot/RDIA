@@ -17,6 +17,10 @@ parser.add_argument('--noise', type = float, help = 'corruption rate, should be 
 parser.add_argument('--alpha', type = float, help = 'Hyperparameter to control relabeling numbers', default = 0.0002)
 
 
+#alpha is relabbeling parameter, the threshold value for influence function
+
+
+
 args = parser.parse_args()
 dataset_name = args.dataset
 #select the dataset used
