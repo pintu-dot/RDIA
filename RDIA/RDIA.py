@@ -57,11 +57,41 @@ print("Load data, cost {:.1f} sec".format(time.time()-start_time))
 # get the subset samples number
 num_tr_sample = x_train.shape[0]
 obj_sample_size = int(sample_ratio * num_tr_sample) # 5% is used for training and rest 5% is kept clean to be used as test samples, %ge can be varied by changing sample_ratio
+
+y_train_cl=np.copy(y_train)
 # flip labels
 idxs = np.arange(y_train.shape[0])
 np.random.shuffle(idxs)
 num_flip = int(flip_ratio * len(idxs))
 y_train[idxs[:num_flip]] = np.logical_xor(np.ones(num_flip), y_train[idxs[:num_flip]]).astype(int)
+
+
+
+
+#for clean dataset
+clf_cl = LogisticRegression(
+        C = C,
+        fit_intercept=False,
+        tol = 1e-7,
+        solver="liblinear",
+        multi_class="ovr",
+        max_iter=100,
+        warm_start=False,
+        verbose=0,
+        )
+clf_cl.fit(x_train,y_train_cl)
+# on Va
+y_va_pred_cl = clf.predict_proba(x_va)[:,1]
+full_logloss = log_loss(y_va,y_va_pred)_cl)
+weight_ar_Cl = clf_cl.coef_.flatten()
+# on Te
+y_te_pred_cl = clf.predict_proba(x_te)[:,1]
+full_te_logloss = log_loss(y_te,y_te_pred_cl)
+full_te_auc = roc_auc_score(y_te, y_te_pred_Cl)
+y_te_pred_cl = clf.predict(x_te)
+full_te_acc = (y_te == y_te_pred_Cl).sum() / y_te.shape[0]
+print("for clean dataset [FullSet] Va logloss {:.6f}".format(full_logloss))
+print("for clean dataset [FullSet] Te logloss {:.6f}".format(full_te_logloss))
 
 
 
@@ -91,8 +121,8 @@ full_te_acc = (y_te == y_te_pred).sum() / y_te.shape[0]
 
 
 # print full-set-model results
-print("[FullSet] Va logloss {:.6f}".format(full_logloss))
-print("[FullSet] Te logloss {:.6f}".format(full_te_logloss))
+print("for noisy dataset [FullSet] Va logloss {:.6f}".format(full_logloss))
+print("for noisy dataset [FullSet] Te logloss {:.6f}".format(full_te_logloss))
 
 # get time cost for computing the IF
 if_start_time = time.time()
